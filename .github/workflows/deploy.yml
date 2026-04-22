@@ -18,17 +18,11 @@ jobs:
           echo "${{ secrets.EC2_SSH_KEY }}" > key.pem
           chmod 600 key.pem
 
-      - name: Copy only app files (no git)
-        run: |
-          scp -i key.pem -o StrictHostKeyChecking=no \
-            app.py requirements.txt Dockerfile deploy.sh verify.sh \
-            ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/capstone/app/
-
       - name: Deploy on EC2
         run: |
           ssh -i key.pem -o StrictHostKeyChecking=no \
             ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-            cd ~/capstone/app
+            cd ~/capstone
             chmod +x deploy.sh verify.sh
             ./deploy.sh
             ./verify.sh
