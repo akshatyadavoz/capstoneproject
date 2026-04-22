@@ -20,16 +20,15 @@ jobs:
 
       - name: Deploy on EC2
         run: |
-          ssh -i key.pem -o StrictHostKeyChecking=no \
-            ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
-            set -e
-            cd /home/ubuntu/capstone
-            git fetch origin
-            git reset --hard origin/main
-            docker stop capstone-app || true
-            docker rm capstone-app || true
-            docker build -t capstone-app .
-            docker run -d --name capstone-app -p 80:5000 capstone-app
-            sleep 3
-            curl -f http://127.0.0.1/health
-            EOF
+          ssh -i key.pem -o StrictHostKeyChecking=no ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} <<EOF
+          set -e
+          cd /home/ubuntu/capstone
+          git fetch origin
+          git reset --hard origin/main
+          docker stop capstone-app || true
+          docker rm capstone-app || true
+          docker build -t capstone-app .
+          docker run -d --name capstone-app -p 80:5000 capstone-app
+          sleep 3
+          curl -f http://127.0.0.1/health
+          EOF
